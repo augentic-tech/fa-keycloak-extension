@@ -1,0 +1,30 @@
+<fieldset>
+  <legend uncollapsed><span class="text">{{:: 'identity-provider.fa-saml-idp.fa-config' | translate}}</span>
+    <kc-tooltip>{{:: 'identity-provider.fa-saml-idp.fa-config.tooltip' | translate}}
+    </kc-tooltip>
+  </legend>
+
+  <div class="form-group clearfix block">
+    <label class="col-md-2 control-label" for="faRequestedAttributes">{{::
+      'identity-provider.fa-saml-idp.requested-attributes' | translate}}</label>
+
+    <div class="col-md-6">
+          <textarea class="form-control" type="text"
+                    ng-model="identityProvider.config.faRequestedAttributes"
+                    id="faRequestedAttributes"></textarea>
+    </div>
+    <kc-tooltip>{{:: 'identity-provider.fa-saml-idp.requested-attributes.tooltip' | translate}}
+    </kc-tooltip>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-2 control-label" for="faAaLevel">{{::
+      'identity-provider.fa-saml-idp.fa-aa-level' | translate}}</label>
+    <div class="col-md-6">
+      <input class="form-control" string-to-number type="number" min="1" max="4" step="1"
+             ng-model="identityProvider.config.faAaLevel"
+             id="faAaLevel"/>
+    </div>
+    <kc-tooltip>{{:: 'identity-provider.fa-saml-idp.fa-aa-level.tooltip' | translate}}</kc-tooltip>
+  </div>
+</fieldset>

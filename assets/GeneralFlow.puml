@@ -1,0 +1,49 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+participant "Keycloak Core" as Keycloak
+participant "FaSamlIdentityProviderFactory\n<<SAMLIdentityProviderFactory>>" as FaSamlIdentityProviderFactory
+participant "FaSamlIdentityProviderConfig\n<<SAMLIdentityProviderConfig>>" as FaSamlIdentityProviderConfig
+participant "FaSamlIdentityProvider\n<<SAMLIdentityProvider>>" as FaSamlIdentityProvider
+
+autonumber
+
+title Initialization
+
+Keycloak --> FaSamlIdentityProviderFactory:init
+Keycloak --> FaSamlIdentityProviderFactory:createConfig
+FaSamlIdentityProviderFactory --> FaSamlIdentityProviderConfig:new
+Keycloak --> FaSamlIdentityProviderFactory:create
+FaSamlIdentityProviderFactory --> FaSamlIdentityProvider:new
+
+newpage Login
+
+participant IdentityBrokerService
+participant "Client Browser" as Client
+participant "CMD/FA" as CMD
+participant "FaSamlUserAttributeMapper <<AttributeToRoleMapper>>" as FaSamlUserAttributeMapper
+participant Session
+
+Keycloak --> IdentityBrokerService:performLogin
+IdentityBrokerService --> FaSamlIdentityProviderFactory:create
+FaSamlIdentityProviderFactory --> IdentityBrokerService: FaSamlIdentityProvider instance
+
+IdentityBrokerService --> FaSamlIdentityProvider:performLogin
+FaSamlIdentityProvider --> Client:redirect to CMD
+Client --> CMD:CMD authentication process (SAML)
+CMD --> Client:CMD authentication result (SAML)
+Client -> IdentityBrokerService:getEndpoint
+IdentityBrokerService --> FaSamlIdentityProvider: callback
+FaSamlIdentityProvider --> FaSamlEndpoint:new
+FaSamlIdentityProvider --> IdentityBrokerService: FaSamlEndpoint instance
+Client --> FaSamlEndpoint:postBinding
+FaSamlEndpoint --> FaSamlEndpoint:handleLoginResponse
+FaSamlEndpoint --> IdentityBrokerService:authenticated
+loop one per existing mapper on Identity Provider configuration
+  IdentityBrokerService --> FaSamlUserAttributeMapper:preprocessFederatedIdentity
+  FaSamlUserAttributeMapper --> Session: put also on Context::AuthenticationSession::ClientNote
+end
+
+IdentityBrokerService --> FaSamlEndpoint
+FaSamlEndpoint --> FaSamlEndpoint:validateMandatoryAttributesExistence
+@enduml
