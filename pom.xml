@@ -12,7 +12,7 @@
 
   <properties>
     <java.version>11</java.version>
-    <keycloak.version>20.0.3</keycloak.version>
+    <keycloak.version>25.0.6</keycloak.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
